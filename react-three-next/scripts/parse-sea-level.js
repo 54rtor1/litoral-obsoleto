@@ -9,9 +9,9 @@ const nestedData = {
 
 // Group by scenario -> confidence -> quantile
 rawData.forEach(item => {
-  const scenario = item.scenario.toLowerCase(); // e.g., "ssp245"
-  const confidence = item.confidence.toLowerCase(); // "medium" or "low"
-  const quantile = item.quantile.toString(); // "5", "17", "50", etc.
+  const scenario = item.scenario.toLowerCase();
+  const confidence = item.confidence.toLowerCase();
+  const quantile = item.quantile.toString();
 
   // Initialize scenario if missing
   if (!nestedData.scenarios[scenario]) {
@@ -33,10 +33,10 @@ rawData.forEach(item => {
   nestedData.scenarios[scenario].confidence[confidence].quantiles[quantile] = {
     label: getQuantileLabel(quantile),
     data: Object.keys(item)
-      .filter(key => key.match(/^\d{4}$/)) // Extract year keys (2020, 2030...)
+      .filter(key => key.match(/^\d{4}$/))
       .map(year => ({
         year: parseInt(year),
-        value: parseFloat(item[year].replace(',', '.')) // Convert "0,05" → 0.05
+        value: parseFloat(item[year].replace(',', '.'))
       }))
   };
 });
@@ -53,7 +53,7 @@ function getQuantileLabel(q) {
   return labels[q] || `Quantile ${q}`;
 }
 
-// Helper: Scenario labels (customize as needed)
+// Helper: Scenario labels
 function getScenarioLabel(scenario) {
   const labels = {
     ssp119: 'Low Emissions',
