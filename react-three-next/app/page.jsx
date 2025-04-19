@@ -2,8 +2,8 @@
 
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
+import { CoastalParticles } from '@/components/canvas/CoastalParticles'
 
-const Dog = dynamic(() => import('@/components/canvas/Examples').then((mod) => mod.Dog), { ssr: false })
 const View = dynamic(() => import('@/components/canvas/View').then((mod) => mod.View), {
   ssr: false,
   loading: () => (
@@ -23,19 +23,15 @@ const Common = dynamic(() => import('@/components/canvas/View').then((mod) => mo
 
 export default function Page() {
   return (
-    <>
-
-      <div className='mx-auto flex w-full flex-col flex-wrap items-center p-12 md:flex-row  lg:w-4/5'>
-        <div className='relative my-12 h-48 w-full py-6 sm:w-1/2 md:mb-40'>
-          <View orbit className='relative h-full  sm:h-48 sm:w-full'>
-            <Suspense fallback={null}>
-              <Dog scale={2} position={[0, -1.6, 0]} rotation={[0.0, -0.10, 0]} />
-              <Common color={'lightpink'} />
-            </Suspense>
-          </View>
-        </div>
-
+    <div className='mx-auto flex w-full flex-col flex-wrap items-center p-12 md:flex-row lg:w-4/5'>
+      <div className='relative my-12 h-48 w-full py-6 sm:w-1/2 md:mb-40'>
+        <View orbit className='relative h-full sm:h-48 sm:w-full'>
+          <Suspense fallback={null}>
+            <CoastalParticles />
+            <Common color={'lightpink'} />
+          </Suspense>
+        </View>
       </div>
-    </>
+    </div>
   )
 }
