@@ -25,7 +25,7 @@ function CoastalParticles() {
   const aspect = viewport.width / viewport.height
 
   return (
-    <mesh scale={[aspect * 9, 9, 1]}>
+    <mesh scale={[3, 2, 1]}>
       <planeGeometry />
       <shaderImpl ref={shaderRef} />
     </mesh>
