@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
-import { CoastalParticles } from '@/components/canvas/CoastalParticles'
+import CoastalParticles from '@/components/canvas/CoastalParticles'
 
 const View = dynamic(() => import('@/components/canvas/View').then((mod) => mod.View), {
   ssr: false,
@@ -23,15 +23,12 @@ const Common = dynamic(() => import('@/components/canvas/View').then((mod) => mo
 
 export default function Page() {
   return (
-    <div className='mx-auto flex w-full flex-col flex-wrap items-center p-12 md:flex-row lg:w-4/5'>
-      <div className='relative my-12 h-48 w-full py-6 sm:w-1/2 md:mb-40'>
-        <View orbit className='relative h-full sm:h-48 sm:w-full'>
-          <Suspense fallback={null}>
-            <CoastalParticles />
-            <Common color={'lightpink'} />
-          </Suspense>
-        </View>
-      </div>
-    </div>
+
+    <View orbit className='relative h-full sm:h-48 sm:w-full'>
+      <Suspense fallback={null}>
+        <CoastalParticles />
+        <Common color={'lightpink'} />
+      </Suspense>
+    </View>
   )
 }
