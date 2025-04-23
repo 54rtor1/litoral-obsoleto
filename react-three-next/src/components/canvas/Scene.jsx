@@ -3,7 +3,7 @@ import { Preload } from '@react-three/drei'
 import * as THREE from 'three'
 import CoastalParticles from '@/components/canvas/CoastalParticles'
 
-export default function Scene({ ...props }) {
+export default function Scene({ scrollY, ...props }) {
   return (
     <Canvas {...props}
       onCreated={(state) => {
@@ -11,9 +11,7 @@ export default function Scene({ ...props }) {
         state.gl.physicallyCorrectLights = true
       }}
     >
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
-      <CoastalParticles />
+      <CoastalParticles scrollY={scrollY} />
       <Preload all />
     </Canvas>
   )

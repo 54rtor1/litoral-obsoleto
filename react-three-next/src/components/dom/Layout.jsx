@@ -1,25 +1,22 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
+import Scroll from '@/components/dom/Scroll'
+
 const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
 
 const Layout = ({ children }) => {
   const ref = useRef()
+  const [scrollY, setScrollY] = useState(0)
 
   return (
-    <div
-      ref={ref}
-      style={{
-        position: 'relative',
-        width: ' 100%',
-        height: '100%',
-        overflow: 'auto',
-        touchAction: 'auto',
-      }}
-    >
-      {children}
+    <div ref={ref} style={{ position: 'relative', width: '100%', height: '100%', overflow: 'auto' }}>
+      <Scroll>
+        {children}
+      </Scroll>
       <Scene
+        scrollY={scrollY}
         style={{
           position: 'fixed',
           top: 0,

@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
 import CoastalParticles from '@/components/canvas/CoastalParticles'
+import YearCounter from '@/components/dom/YearCounter'
 
 const View = dynamic(() => import('@/components/canvas/View').then((mod) => mod.View), {
   ssr: false,
@@ -23,11 +24,11 @@ const Common = dynamic(() => import('@/components/canvas/View').then((mod) => mo
 
 export default function Page() {
   return (
-
     <View orbit className='relative h-full sm:h-48 sm:w-full'>
       <Suspense fallback={null}>
         <CoastalParticles />
         <Common color={'lightpink'} />
+        <YearCounter />
       </Suspense>
     </View>
   )
