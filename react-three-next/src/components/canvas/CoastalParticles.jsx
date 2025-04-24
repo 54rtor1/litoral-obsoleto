@@ -1,12 +1,12 @@
+import * as THREE from 'three'
 import { useVideoTexture } from '@react-three/drei'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber'
 import { useRef, Suspense } from 'react'
-import ShaderImpl from '@/templates/Shader/Shader'
 import useScrollStore from '@/stores/scrollStore'
+import CoastalShaderMaterial from '@/templates/Shader/Shader'
 
 function CoastalParticles() {
   const shaderRef = useRef()
-  const { viewport } = useThree()
   const { seaLevel } = useScrollStore()
 
   const videoTexture = useVideoTexture('/videos/coastal.mp4', {
@@ -15,28 +15,24 @@ function CoastalParticles() {
     muted: true,
   })
 
-  useFrame(() => {
+  useFrame((state) => {
     if (shaderRef.current) {
-      // Use values directly from Zustand store
+      shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
       shaderRef.current.uniforms.uSeaLevel.value = seaLevel
-      shaderRef.current.uniforms.uOpacity.value = Math.min(1, seaLevel)
-      shaderRef.current.uniforms.time.value += 0.005
     }
   })
 
-  const aspect = viewport.width / viewport.height
-
   return (
     <mesh scale={[3, 2, 1]}>
-      <planeGeometry />
-      <shaderImpl
+      <planeGeometry args={[1, 1]} />
+      <coastalShaderMaterial
         ref={shaderRef}
-        uniforms={{
-          videoTexture: { value: videoTexture },
-          uSeaLevel: { value: 0 },
-          uOpacity: { value: 1 },
-          time: { value: 0 },
-        }}
+        key={CoastalShaderMaterial.key}
+        transparent
+        depthWrite={false}
+        uniforms-videoTexture-value={videoTexture}
+        uniforms-uSeaLevel-value={seaLevel}
+        uniforms-time-value={0}
       />
     </mesh>
   )
