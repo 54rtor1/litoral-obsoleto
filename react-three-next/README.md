@@ -51,7 +51,7 @@ Thanks to [tunnel-rat](https://github.com/pmndrs/tunnel-rat) the starter can por
 
 ```jsx
 <div className='relative'>
-  <View orbit className='relative sm:h-48 sm:w-full'>
+<View orbit className='relative h-full sm:h-48 sm:w-full' style={{ background: '#000' }}>
     <Dog scale={2} />
     // Some 3D components will be rendered here
   </View>
