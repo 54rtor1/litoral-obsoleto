@@ -1,6 +1,11 @@
-uniform sampler2D videoTexture;
+precision mediump float;
 varying vec2 vUv;
+uniform sampler2D videoTexture;
+uniform float uSeaLevel;
+uniform float time;
+
+// [Your Perlin noise implementation]
 
 void main() {
-  gl_FragColor = texture2D(videoTexture, vUv);
+  // [Your fragment shader code]
 }
