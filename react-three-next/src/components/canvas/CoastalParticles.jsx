@@ -15,9 +15,8 @@ function CoastalParticles() {
     muted: true,
   })
 
-  useFrame((state) => {
+  useFrame(() => {
     if (shaderRef.current) {
-      shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
       shaderRef.current.uniforms.uSeaLevel.value = seaLevel
     }
   })
@@ -32,7 +31,6 @@ function CoastalParticles() {
         depthWrite={false}
         uniforms-videoTexture-value={videoTexture}
         uniforms-uSeaLevel-value={seaLevel}
-        uniforms-time-value={0}
       />
     </mesh>
   )

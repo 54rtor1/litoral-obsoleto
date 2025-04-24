@@ -20,14 +20,12 @@ const View = dynamic(() => import('@/components/canvas/View').then((mod) => mod.
     </div>
   ),
 })
-const Common = dynamic(() => import('@/components/canvas/View').then((mod) => mod.Common), { ssr: false })
 
 export default function Page() {
   return (
-    <View orbit className='relative h-full sm:h-48 sm:w-full'>
+    <View>
       <Suspense fallback={null}>
         <CoastalParticles />
-        <Common color={'lightpink'} />
         <YearCounter />
       </Suspense>
     </View>
