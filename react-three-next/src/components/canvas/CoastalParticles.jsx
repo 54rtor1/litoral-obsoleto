@@ -15,7 +15,6 @@ function CoastalParticles() {
     muted: true,
   })
 
-  // Generate particles positions and uvs
   // Generate particles positions, uvs, and random velocities
   const particles = useMemo(() => {
     const count = 512 * 512
@@ -27,17 +26,20 @@ function CoastalParticles() {
     let i2 = 0
     for (let i = 0; i < 512; i++) {
       for (let j = 0; j < 512; j++) {
-        positions[i3] = (i / 512) * 2 - 1
-        positions[i3 + 1] = (j / 512) * 2 - 1
+        const baseX = (i / 512) * 2 - 1
+        const baseY = (j / 512) * 2 - 1
+
+        positions[i3] = baseX
+        positions[i3 + 1] = baseY
         positions[i3 + 2] = 0
 
         uvs[i2] = i / 512
         uvs[i2 + 1] = j / 512
 
-        // random velocity direction (small values)
-        velocities[i3] = (Math.random() - 0.5) * 2.0
-        velocities[i3 + 1] = (Math.random() - 0.5) * 2.0
-        velocities[i3 + 2] = (Math.random() - 0.5) * 2.0
+        // Tiny offset already applied
+        velocities[i3] = (Math.random() - 0.5) * 0.5
+        velocities[i3 + 1] = (Math.random() - 0.5) * 0.5
+        velocities[i3 + 2] = (Math.random() - 0.5) * 0.5
 
         i3 += 3
         i2 += 2
