@@ -15,7 +15,6 @@ function CoastalParticles() {
     muted: true,
   })
 
-  // Generate particles positions, uvs, and random velocities
   const particles = useMemo(() => {
     const count = 512 * 512
     const positions = new Float32Array(count * 3)
@@ -36,7 +35,6 @@ function CoastalParticles() {
         uvs[i2] = i / 512
         uvs[i2 + 1] = j / 512
 
-        // Tiny offset already applied
         velocities[i3] = (Math.random() - 0.5) * 0.5
         velocities[i3 + 1] = (Math.random() - 0.5) * 0.5
         velocities[i3 + 2] = (Math.random() - 0.5) * 0.5
@@ -54,9 +52,9 @@ function CoastalParticles() {
     return geometry
   }, [])
 
-
-  useFrame(() => {
+  useFrame(({ clock }) => {
     if (shaderRef.current) {
+      shaderRef.current.uniforms.uTime.value = clock.elapsedTime
       shaderRef.current.uniforms.uSeaLevel.value = seaLevel
     }
   })
@@ -65,11 +63,11 @@ function CoastalParticles() {
     <points geometry={particles}>
       <coastalShaderMaterial
         ref={shaderRef}
-        key={CoastalShaderMaterial.key}
         transparent
         depthWrite={false}
-        uniforms-videoTexture-value={videoTexture}
-        uniforms-uSeaLevel-value={seaLevel}
+        videoTexture={videoTexture}
+        uSeaLevel={seaLevel}
+        uTime={0}
       />
     </points>
   )
