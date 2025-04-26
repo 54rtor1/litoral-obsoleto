@@ -24,12 +24,12 @@ const CoastalShaderMaterial = shaderMaterial(
     vec4 texColor = texture2D(videoTexture, uv);
 
     // Move along random velocity direction
-    vec3 newPosition = position + velocity * uSeaLevel * 5.0; // (multiplier controls explosion intensity)
+    vec3 newPosition = position + velocity * uSeaLevel * 2.5;
 
     vColor = texColor;
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-    gl_PointSize = 1.5;
+    gl_PointSize = 0.8;
   }
   `,
   // Fragment Shader
