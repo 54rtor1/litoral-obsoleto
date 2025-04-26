@@ -10,43 +10,39 @@ const CoastalShaderMaterial = shaderMaterial(
   },
   // Vertex Shader
   `
+  precision mediump float;
+  attribute vec3 velocity; // <- Add velocity attribute
   varying vec2 vUv;
+  varying vec4 vColor;
+
+  uniform sampler2D videoTexture;
+  uniform float uSeaLevel;
+
   void main() {
     vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+    vec4 texColor = texture2D(videoTexture, uv);
+
+    // Move along random velocity direction
+    vec3 newPosition = position + velocity * uSeaLevel * 5.0; // (multiplier controls explosion intensity)
+
+    vColor = texColor;
+
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+    gl_PointSize = 1.5;
   }
   `,
   // Fragment Shader
   `
   precision mediump float;
   varying vec2 vUv;
-  uniform sampler2D videoTexture;
-  uniform float uSeaLevel;
+  varying vec4 vColor;
 
   void main() {
-    vec2 center = vec2(0.5, 0.5);
-    vec2 dir = vUv - center;
-    float dist = length(dir);
+    float dist = distance(gl_PointCoord, vec2(0.5));
+    if (dist > 0.5) discard;
 
-    // Stretch UVs outward
-    vec2 distortedUV = vUv + dir * uSeaLevel * 0.5; // heavier distortion
-
-    // Sample base color
-    vec4 baseColor = texture2D(videoTexture, distortedUV);
-
-    // Create glow around the edges
-    float glow = smoothstep(0.3, 0.7, dist + uSeaLevel * 0.5);
-
-    // Soften color at borders
-    vec4 glowColor = vec4(baseColor.rgb, 1.0 - glow);
-
-    // Blend baseColor and glowColor
-    vec4 finalColor = mix(glowColor, baseColor, 1.0 - dist);
-
-    // Fade everything out with seaLevel
-    finalColor.a *= smoothstep(1.0, 0.0, uSeaLevel);
-
-    gl_FragColor = finalColor;
+    gl_FragColor = vColor;
   }
   `
 )
