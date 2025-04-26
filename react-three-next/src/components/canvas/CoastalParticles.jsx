@@ -12,7 +12,7 @@ function CoastalParticles() {
   const videoTexture = useVideoTexture('/videos/coastal.mp4', {
     autoplay: true,
     loop: true,
-    muted: true,
+
   })
 
   const particles = useMemo(() => {
@@ -21,11 +21,15 @@ function CoastalParticles() {
     const uvs = new Float32Array(count * 2)
     const velocities = new Float32Array(count * 3)
 
+    const aspectRatio = videoTexture?.image
+      ? videoTexture.image.videoWidth / videoTexture.image.videoHeight
+      : 1
+
     let i3 = 0
     let i2 = 0
     for (let i = 0; i < 512; i++) {
       for (let j = 0; j < 512; j++) {
-        const baseX = (i / 512) * 2 - 1
+        const baseX = ((i / 512) * 2 - 1) * aspectRatio
         const baseY = (j / 512) * 2 - 1
 
         positions[i3] = baseX
@@ -50,7 +54,8 @@ function CoastalParticles() {
     geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3))
 
     return geometry
-  }, [])
+  }, [videoTexture])
+
 
   useFrame(({ clock }) => {
     if (shaderRef.current) {
