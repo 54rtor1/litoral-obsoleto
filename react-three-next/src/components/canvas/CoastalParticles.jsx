@@ -4,6 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import { useRef, useMemo, Suspense } from 'react'
 import useScrollStore from '@/stores/scrollStore'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
+import CoastalShaderMaterial from '@/templates/Shader/Shader.jsx'
 
 function CoastalParticles() {
   const shaderRef = useRef()
