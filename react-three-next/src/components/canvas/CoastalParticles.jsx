@@ -3,6 +3,7 @@ import { useVideoTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useRef, useMemo, Suspense } from 'react'
 import useScrollStore from '@/stores/scrollStore'
+import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import CoastalShaderMaterial from '@/templates/Shader/Shader'
 
 function CoastalParticles() {
@@ -82,6 +83,14 @@ export default function CoastalParticlesWrapper() {
   return (
     <Suspense fallback={null}>
       <CoastalParticles />
+      <EffectComposer>
+        <Bloom
+          intensity={1}
+          luminanceThreshold={0.1}
+          luminanceSmoothing={0.9}
+          mipmapBlur
+        />
+      </EffectComposer>
     </Suspense>
   )
 }
