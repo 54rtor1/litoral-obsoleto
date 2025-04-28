@@ -1,25 +1,11 @@
 'use client'
 
-import { forwardRef, useImperativeHandle, useRef } from 'react'
-import { OrbitControls, View as ViewImpl } from '@react-three/drei'
-import { Three } from '@/helpers/components/Three'
+import { Canvas } from '@react-three/fiber'
 
-const View = forwardRef(({ children, orbit, ...props }, ref) => {
-  const localRef = useRef(null)
-  useImperativeHandle(ref, () => localRef.current)
-
+export function View({ children, ...props }) {
   return (
-    <>
-      <div ref={localRef} {...props} />
-      <Three>
-        <ViewImpl track={localRef}>
-          {children}
-          {orbit && <OrbitControls />}
-        </ViewImpl>
-      </Three>
-    </>
+    <Canvas {...props}>
+      {children}
+    </Canvas>
   )
-})
-View.displayName = 'View'
-
-export { View }
+}
