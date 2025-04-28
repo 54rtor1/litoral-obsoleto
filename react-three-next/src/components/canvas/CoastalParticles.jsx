@@ -4,7 +4,6 @@ import { useFrame } from '@react-three/fiber'
 import { useRef, useMemo, Suspense } from 'react'
 import useScrollStore from '@/stores/scrollStore'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
-import CoastalShaderMaterial from '@/templates/Shader/Shader'
 
 function CoastalParticles() {
   const shaderRef = useRef()
@@ -85,8 +84,8 @@ export default function CoastalParticlesWrapper() {
       <CoastalParticles />
       <EffectComposer>
         <Bloom
-          intensity={1}
-          luminanceThreshold={0.1}
+          intensity={1.5}
+          luminanceThreshold={0.0}
           luminanceSmoothing={0.9}
           mipmapBlur
         />
