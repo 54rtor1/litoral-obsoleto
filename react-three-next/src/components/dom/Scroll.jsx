@@ -27,7 +27,6 @@ export default function Scroll({ children }) {
       const targetYear = minYear + progress * (maxYear - minYear);
       let index = 0;
 
-      // Find nearest data points
       while (index < scenarioData.length - 1 && scenarioData[index + 1].year <= targetYear) {
         index++;
       }
@@ -42,18 +41,16 @@ export default function Scroll({ children }) {
         seaLevel = start.value + t * (end.value - start.value);
       }
 
-      // Set sea level to 0 if scroll progress is at the top
-      if (progress === 0) {
-        seaLevel = 0;
-      }
+      const fadeIn = Math.pow(Math.min(1, Math.max(0, progress * 5)), 1.5);
+      seaLevel *= fadeIn;
 
-      // Update store
       useScrollStore.getState().setScrollState({
         progress,
         year: targetYear,
         seaLevel,
       });
     });
+
 
     const effectSub = addEffect((time) => lenis.raf(time));
     return () => {
