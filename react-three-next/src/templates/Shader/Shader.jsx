@@ -28,49 +28,67 @@ const CoastalShaderMaterial = shaderMaterial(
       displacedPosition.x += sin(uTime + velocity.x * 10.0) * 0.02;
       displacedPosition.y += cos(uTime + velocity.y * 10.0) * 0.02;
 
-      displacedPosition += velocity * uSeaLevel * 24.0;  // Increased multiplier for dramatic effect
+      displacedPosition += velocity * uSeaLevel * 24.0;
 
       gl_Position = projectionMatrix * modelViewMatrix * vec4(displacedPosition, 1.0);
 
-      gl_PointSize = 1.2 + uSeaLevel * 1.5;  // Gradual increase in particle size
+      gl_PointSize = 1.2 + uSeaLevel * 1.5;
     }
   `,
   // Fragment Shader
   `
     precision highp float;
 
-    uniform sampler2D videoTexture;
-    uniform float uSeaLevel;
-    varying vec2 vUv;
-    varying vec3 vPosition;
+uniform sampler2D videoTexture;
+uniform float uSeaLevel;
+varying vec2 vUv;
+varying vec3 vPosition;
 
-    void main() {
-      vec4 color = texture2D(videoTexture, vUv);
+// Function to create a star shape
+float starShape(vec2 uv, int spikes, float innerRadius, float outerRadius) {
+  vec2 centerUv = uv - 0.5; // Move (0,0) -> center
+  float angle = atan(centerUv.y, centerUv.x);
+  float radius = length(centerUv);
 
-      float brightness = 1.0;
-      color.rgb *= brightness;
+  float spike = abs(cos(float(spikes) * angle));
+  float starRadius = mix(innerRadius, outerRadius, spike);
 
-      vec3 tintColor = vec3(0.8, 0.6, 1.0); // Light blue tint
-      float tintStrength = uSeaLevel * 0.2;
-      color.rgb = mix(color.rgb, tintColor, tintStrength);
+  return smoothstep(starRadius, starRadius - 0.02, radius);
+}
 
-      float distanceFromCenter = length(vPosition.xy);
-      float colorMixStrength = smoothstep(0.0, 1.0, distanceFromCenter * 0.1); // Control color transition based on distance
+void main() {
+  // Create a star shape mask
+  float star = starShape(gl_PointCoord, 5, 0.2, 0.5); // 5 spikes, can tweak
 
-      vec3 startColor = vec3(0.0, 0.8, 1.0);
-      vec3 endColor = vec3(1.0, 0.2, 0.6);
-      vec3 gradientColor = mix(startColor, endColor, colorMixStrength);
+  if (star < 0.1) discard; // Discard outside the star
 
-      color.rgb = mix(color.rgb, gradientColor, colorMixStrength);
+  vec4 color = texture2D(videoTexture, vUv);
 
-      float opacity = 1.0 - smoothstep(0.0, 1.0, distanceFromCenter * 0.5);
-      color.a *= opacity;
+  float brightness = 1.0;
+  color.rgb *= brightness;
 
-      float blurFactor = pow(uSeaLevel, 2.5) * 0.5;
-      color.rgb += blurFactor;
+  vec3 tintColor = vec3(0.8, 0.6, 1.0);
+  float tintStrength = uSeaLevel * 0.9;
+  color.rgb = mix(color.rgb, tintColor, tintStrength);
 
-      gl_FragColor = color;
-    }
+  float distanceFromCenter = length(vPosition.xy);
+  float colorMixStrength = smoothstep(0.0, 1.0, distanceFromCenter * 0.1);
+
+  vec3 startColor = vec3(0.0, 0.8, 1.0);
+  vec3 endColor = vec3(1.0, 0.2, 0.6);
+  vec3 gradientColor = mix(startColor, endColor, colorMixStrength);
+
+  color.rgb = mix(color.rgb, gradientColor, colorMixStrength);
+
+  float opacity = 1.0 - smoothstep(0.0, 1.0, distanceFromCenter * 0.5);
+  color.a *= opacity;
+
+  float blurFactor = pow(uSeaLevel, 2.5) * 0.5;
+  color.rgb += blurFactor;
+
+  gl_FragColor = color;
+}
+
   `
 )
 
