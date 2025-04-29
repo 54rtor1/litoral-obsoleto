@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react'
 import { View } from '@/components/canvas/View'
-import CoastalParticles from '@/components/canvas/CoastalParticles'
+import CoastalParticlesWrapper from '@/components/canvas/CoastalParticlesWrapper'
 import YearCounter from '@/components/dom/YearCounter'
 
 export default function Page() {
@@ -10,7 +10,7 @@ export default function Page() {
     <>
       <View>
         <Suspense fallback={null}>
-          <CoastalParticles />
+          <CoastalParticlesWrapper />
         </Suspense>
       </View>
       <YearCounter />

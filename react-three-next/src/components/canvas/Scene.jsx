@@ -1,7 +1,8 @@
 import { Canvas } from '@react-three/fiber'
 import { Preload } from '@react-three/drei'
 import * as THREE from 'three'
-import CoastalParticles from '@/components/canvas/CoastalParticles'
+import CoastalParticlesWrapper from '@/components/canvas/CoastalParticlesWrapper'
+
 
 export default function Scene({ scrollY, ...props }) {
   return (
@@ -12,7 +13,7 @@ export default function Scene({ scrollY, ...props }) {
         state.scene.background = new THREE.Color(0x000000) // <<< important
       }}
     >
-      <CoastalParticles scrollY={scrollY} />
+      <CoastalParticlesWrapper />
       <Preload all />
     </Canvas>
   )
