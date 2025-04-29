@@ -1,9 +1,10 @@
 import * as THREE from 'three'
 import { useVideoTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useRef, Suspense } from 'react'
+import { useRef, useMemo, Suspense } from 'react'
 import useScrollStore from '@/stores/scrollStore'
-import CoastalShaderMaterial from '@/templates/Shader/Shader'
+import { EffectComposer, Bloom } from '@react-three/postprocessing'
+import CoastalShaderMaterial from '@/templates/Shader/Shader.jsx'
 
 function CoastalParticles() {
   const shaderRef = useRef()
@@ -12,34 +13,86 @@ function CoastalParticles() {
   const videoTexture = useVideoTexture('/videos/coastal.mp4', {
     autoplay: true,
     loop: true,
-    muted: true,
   })
 
-  useFrame(() => {
+  const [geometry, scale] = useMemo(() => {
+    const count = 512 * 512
+    const positions = new Float32Array(count * 3)
+    const uvs = new Float32Array(count * 2)
+    const velocities = new Float32Array(count * 3)
+
+    let aspectRatio = 1
+    if (videoTexture?.image?.videoWidth && videoTexture?.image?.videoHeight) {
+      aspectRatio = videoTexture.image.videoWidth / videoTexture.image.videoHeight
+    }
+
+    let i3 = 0
+    let i2 = 0
+    for (let i = 0; i < 512; i++) {
+      for (let j = 0; j < 512; j++) {
+        const baseX = ((i / 512) * 2 - 1) * aspectRatio
+        const baseY = (j / 512) * 2 - 1
+
+        positions[i3] = baseX
+        positions[i3 + 1] = baseY
+        positions[i3 + 2] = 0
+
+        uvs[i2] = i / 512
+        uvs[i2 + 1] = j / 512
+
+        velocities[i3] = (Math.random() - 0.5) * 0.5
+        velocities[i3 + 1] = (Math.random() - 0.5) * 0.5
+        velocities[i3 + 2] = (Math.random() - 0.5) * 0.5
+
+        i3 += 3
+        i2 += 2
+      }
+    }
+
+    const geometry = new THREE.BufferGeometry()
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
+    geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3))
+
+    const scale = [aspectRatio * 2, 2, 1]
+
+    return [geometry, scale]
+  }, [videoTexture])
+
+  useFrame(({ clock }) => {
     if (shaderRef.current) {
+      shaderRef.current.uniforms.uTime.value = clock.elapsedTime
       shaderRef.current.uniforms.uSeaLevel.value = seaLevel
     }
   })
 
   return (
-    <mesh scale={[3, 2, 1]}>
-      <planeGeometry args={[1, 1]} />
+    <points geometry={geometry} scale={scale}>
       <coastalShaderMaterial
         ref={shaderRef}
-        key={CoastalShaderMaterial.key}
         transparent
         depthWrite={false}
-        uniforms-videoTexture-value={videoTexture}
-        uniforms-uSeaLevel-value={seaLevel}
+        videoTexture={videoTexture}
+        uSeaLevel={seaLevel}
+        uTime={0}
       />
-    </mesh>
+    </points>
   )
 }
+
 
 export default function CoastalParticlesWrapper() {
   return (
     <Suspense fallback={null}>
       <CoastalParticles />
+      <EffectComposer>
+        <Bloom
+          intensity={1.5}
+          luminanceThreshold={0.0}
+          luminanceSmoothing={0.9}
+          mipmapBlur
+        />
+      </EffectComposer>
     </Suspense>
   )
 }
