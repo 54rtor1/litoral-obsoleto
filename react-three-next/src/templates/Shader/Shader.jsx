@@ -44,9 +44,8 @@ uniform float uSeaLevel;
 varying vec2 vUv;
 varying vec3 vPosition;
 
-// Function to create a star shape
 float starShape(vec2 uv, int spikes, float innerRadius, float outerRadius) {
-  vec2 centerUv = uv - 0.5; // Move (0,0) -> center
+  vec2 centerUv = uv - 0.5;
   float angle = atan(centerUv.y, centerUv.x);
   float radius = length(centerUv);
 
@@ -58,7 +57,7 @@ float starShape(vec2 uv, int spikes, float innerRadius, float outerRadius) {
 
 void main() {
   // Create a star shape mask
-  float star = starShape(gl_PointCoord, 5, 0.2, 0.5); // 5 spikes, can tweak
+  float star = starShape(gl_PointCoord, 5, 0.2, 0.8);
 
   if (star < 0.1) discard; // Discard outside the star
 
