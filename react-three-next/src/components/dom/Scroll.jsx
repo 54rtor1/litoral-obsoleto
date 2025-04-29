@@ -3,7 +3,7 @@ import { addEffect } from '@react-three/fiber';
 import { useRef } from 'react';
 import Lenis from 'lenis';
 import useScrollStore from '@/stores/scrollStore';
-import data from '@/data/sea-level-recife-nested.json'
+import data from '@/data/sea-level-recife-nested.json';
 
 export default function Scroll({ children }) {
   const content = useRef(null);
@@ -27,7 +27,6 @@ export default function Scroll({ children }) {
       const targetYear = minYear + progress * (maxYear - minYear);
       let index = 0;
 
-      // Find nearest data points
       while (index < scenarioData.length - 1 && scenarioData[index + 1].year <= targetYear) {
         index++;
       }
@@ -42,14 +41,16 @@ export default function Scroll({ children }) {
         seaLevel = start.value + t * (end.value - start.value);
       }
 
-      // Update store
+      const fadeIn = Math.pow(Math.min(1, Math.max(0, progress * 5)), 1.5);
+      seaLevel *= fadeIn;
+
       useScrollStore.getState().setScrollState({
         progress,
         year: targetYear,
         seaLevel,
       });
-
     });
+
 
     const effectSub = addEffect((time) => lenis.raf(time));
     return () => {

@@ -9,6 +9,7 @@ export default function Scene({ scrollY, ...props }) {
       onCreated={(state) => {
         state.gl.toneMapping = THREE.AgXToneMapping
         state.gl.physicallyCorrectLights = true
+        state.scene.background = new THREE.Color(0x000000) // <<< important
       }}
     >
       <CoastalParticles scrollY={scrollY} />
