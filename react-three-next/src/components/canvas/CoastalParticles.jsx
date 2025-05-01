@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useVideoTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useEffect } from 'react'
 import useScrollStore from '@/stores/scrollStore'
 import CoastalShaderMaterial from '@/templates/Shader/Shader.jsx'
 
@@ -12,7 +12,20 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
   const videoTexture = useVideoTexture(videoUrl, {
     autoplay: true,
     loop: true,
-  })
+    muted: true,
+    playsInline: true,
+    preload: "metadata",
+    crossOrigin: 'anonymous',
+  });
+
+  useEffect(() => {
+    if (videoTexture) {
+      videoTexture.minFilter = THREE.LinearFilter
+      videoTexture.magFilter = THREE.LinearFilter
+      videoTexture.generateMipmaps = false
+      videoTexture.encoding = THREE.sRGBEncoding
+    }
+  }, [videoTexture])
 
   const particles = useMemo(() => {
     const count = 512 * 512
