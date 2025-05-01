@@ -33,14 +33,14 @@ export default function CoastalParticlesWrapper() {
           />
         )
       })}
-      <EffectComposer disableNormalPass>
+      {/* <EffectComposer disableNormalPass>
         <Bloom
-          intensity={1.2}
-          luminanceThreshold={0.1}
-          luminanceSmoothing={0.8}
+          intensity={0.4}
+          luminanceThreshold={0.5}
+          luminanceSmoothing={0.5}
           mipmapBlur
         />
-      </EffectComposer>
+      </EffectComposer> */}
     </Suspense>
   )
 }
