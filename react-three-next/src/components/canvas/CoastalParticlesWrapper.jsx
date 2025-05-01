@@ -3,11 +3,18 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import CoastalParticles from './CoastalParticles'
 
 const videoSources = [
-  '/videos/coastal.mp4',
-  '/videos/Coastal2.mp4',
+  '/videos/coastal1.1.mp4',
+  '/videos/Coastal1.2.mp4',
+  '/videos/Coastal1.3.mp4',
+  '/videos/Coastal1.4.mp4',
+  '/videos/Coastal1.5.mp4',
+  '/videos/Coastal1.6.mp4',
+  '/videos/coastal1.1.mp4',
+  '/videos/Coastal1.2.mp4',
+
 ]
 
-const MAX_VISIBLE = 10
+const MAX_VISIBLE = 8
 
 export default function CoastalParticlesWrapper() {
   return (
