@@ -19,6 +19,7 @@ const Layout = ({ children }) => {
       </Scroll>
       <Scene
         scrollY={scrollY}
+        useImageBackground={true}
         style={{
           position: 'fixed',
           top: 0,
