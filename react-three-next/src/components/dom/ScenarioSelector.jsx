@@ -23,13 +23,13 @@ export default function ScenarioSelector() {
               className={`text-cyan-300/90 transition-transform duration-200 ${scenario === key ? 'scale-110' : 'scale-100'
                 }`}
             >
-              <span className="text-5xl">{config.icon}</span>
+              <span className="text-5xl  hover:text-white">{config.icon}</span>
             </button>
           </div>
         ))}
       </div>
 
-      <div className="space-y-1 text-cyan-300/80">
+      <div className="space-y-1 bg-black text-cyan-300/80">
         <p className="text-sm opacity-80">{metadata.description}</p>
         <p className="text-sm opacity-100">{metadata.info}</p>
       </div>

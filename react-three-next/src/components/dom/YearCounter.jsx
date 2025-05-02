@@ -4,10 +4,18 @@ export default function YearCounter() {
   const { year, seaLevel } = useScrollStore();
 
   return (
-    <div className="glitch fixed bottom-12 left-4 font-mono text-xl text-green-500">
-      YEAR: <span className="text-yellow-400">{Math.round(year)}</span>
-      <div className="text-sm text-cyan-400">
-        SEA LEVEL: {seaLevel.toFixed(2)}m
+    <div className="fixed bottom-12 left-4 bg-black p-4 text-xl">
+      <div className="flex flex-col items-start space-y-2">
+        <div className="text-sm text-cyan-300">
+          Projected Year: <span className="text-white">{Math.round(year)}</span>
+        </div>
+        <div className="text-sm text-cyan-300">
+          Rise: {seaLevel.toFixed(2)}m
+        </div>
+        <div className="mt-4 cursor-pointer text-sm text-cyan-300  opacity-80 hover:text-white">
+          <span>Scroll to alter view</span>
+          <span className="ml-2 text-xl text-white">𓂃</span>
+        </div>
       </div>
     </div>
   );
