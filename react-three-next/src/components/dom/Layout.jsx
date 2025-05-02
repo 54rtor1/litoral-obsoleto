@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import Scroll from '@/components/dom/Scroll'
 import ScenarioFooter from '@/components/dom/ScenarioFooter'
 import ScenarioSelector from './ScenarioSelector'
+import Info from './Info'
 
 const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
 
@@ -33,6 +34,7 @@ const Layout = ({ children }) => {
         eventPrefix='client'
       />
       <ScenarioFooter />
+      <Info />
     </div>
   )
 }
