@@ -9,29 +9,18 @@ export default function ScenarioSelector() {
   const [hoveredKey, setHoveredKey] = useState(null);
 
   return (
-    <div className="fixed left-12 top-12 z-50 space-y-3">
-      <div className="flex gap-4">
+    <div className="group fixed left-6 top-6 z-50 flex flex-col gap-2">
+      <div className="flex gap-3">
         {Object.entries(scenarios).map(([key, config]) => (
-          <div
+          <button
             key={key}
-            className="group relative"
-            onMouseEnter={() => setHoveredKey(key)}
-            onMouseLeave={() => setHoveredKey(null)}
+            onClick={() => setScenario(key)}
+            className={`text-4xl transition duration-200 ${scenario === key ? 'scale-110 text-white' : 'text-cyan-300'
+              }`}
           >
-            <button
-              onClick={() => setScenario(key)}
-              className={`text-cyan-300/90 transition-transform duration-200 ${scenario === key ? 'scale-110' : 'scale-100'
-                }`}
-            >
-              <span className="text-5xl  hover:text-white">{config.icon}</span>
-            </button>
-          </div>
+            {config.icon}
+          </button>
         ))}
-      </div>
-
-      <div className="space-y-1 bg-black text-cyan-300/80">
-        <p className="text-sm opacity-80">{metadata.description}</p>
-        <p className="text-sm opacity-100">{metadata.info}</p>
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ export default function Scene({ scrollY, useImageBackground = false, ...props })
             state.scene.background = texture
           })
         } else {
-          state.scene.background = new THREE.Color(0x112233)
+          state.scene.background = new THREE.Color(0x000000)
         }
       }}
     >
