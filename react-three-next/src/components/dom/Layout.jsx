@@ -3,10 +3,8 @@
 import { useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Scroll from '@/components/dom/Scroll'
-import YearCounter from '@/components/dom/YearCounter'
-import ScenarioSelector from '@/components/dom/ScenarioSelector'
-import ScenarioInfo from '@/components/dom/ScenarioInfo'
-import ScenarioHeader from '@/components/dom/ScenarioHeader'
+import ScenarioFooter from '@/components/dom/ScenarioFooter'
+import ScenarioSelector from './ScenarioSelector'
 
 const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
 
@@ -16,6 +14,7 @@ const Layout = ({ children }) => {
 
   return (
     <div ref={ref} style={{ position: 'relative', width: '100%', height: '100%', overflow: 'auto' }}>
+      <ScenarioSelector />
       <Scroll>
         {children}
       </Scroll>
@@ -33,7 +32,7 @@ const Layout = ({ children }) => {
         eventSource={ref}
         eventPrefix='client'
       />
-      <ScenarioHeader />
+      <ScenarioFooter />
     </div>
   )
 }
