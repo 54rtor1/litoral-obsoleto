@@ -3,24 +3,16 @@ import useScenarioStore from '@/stores/scenarioStore'
 
 const fetcher = (url) => fetch(url).then(res => res.json())
 
-export default function useSeaLevel() {
-  const { scenario } = useScenarioStore()
-
+export default function useSeaLevel({ scenario = 'ssp245' } = {}) {
   const { data, error } = useSWR('../../data/sea-level-recife-nested.json', fetcher, {
     revalidateOnFocus: false,
-  })
+  });
 
-  const quantileData =
-    data?.scenarios?.[scenario]?.confidence?.medium?.quantiles || {}
-
-  const quantile = quantileData['50']
-    ? '50'
-    : Object.keys(quantileData).sort((a, b) => parseFloat(a) - parseFloat(b))[0]
+  const q50 = data?.scenarios?.[scenario]?.confidence?.medium?.quantiles?.['50']?.data; // Median quantile
 
   return {
-    data: quantileData[quantile]?.data,
-    quantileUsed: quantile,
-    isLoading: !data && !error,
+    data: q50,
+    isLoading: !error && !data,
     error,
-  }
+  };
 }
