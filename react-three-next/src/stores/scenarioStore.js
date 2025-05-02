@@ -16,7 +16,7 @@ export const scenarios = {
   },
   ssp370: {
     title: "Uncharted Depths",
-    description: "Where shadows of what could be linger.",
+    description: "SSP370 - Shadows of what could be linger.",
     info: "Business-as-usual. Emissions double by 2100, leading to >3.5°C warming. Ice sheets destabilize, feedback loops accelerate. The tide rises not just in meters, but in uncertainty.",
     icon: "𓍼"
   },
