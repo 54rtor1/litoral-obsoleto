@@ -28,7 +28,8 @@ const CoastalShaderMaterial = shaderMaterial(
       displacedPosition.x += sin(uTime + velocity.x * 10.0) * 0.02;
       displacedPosition.y += cos(uTime + velocity.y * 10.0) * 0.02;
 
-      displacedPosition += velocity * uSeaLevel * 24.0;
+      float visualSeaLevel = pow(uSeaLevel, 0.8);
+      displacedPosition += velocity * visualSeaLevel * 10.0;
 
       gl_Position = projectionMatrix * modelViewMatrix * vec4(displacedPosition, 1.0);
 
