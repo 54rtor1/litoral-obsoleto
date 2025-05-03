@@ -1,18 +1,27 @@
 import { Canvas } from '@react-three/fiber'
 import { Preload } from '@react-three/drei'
 import * as THREE from 'three'
-import CoastalParticles from '@/components/canvas/CoastalParticles'
+import CoastalParticlesWrapper from '@/components/canvas/CoastalParticlesWrapper'
 
-export default function Scene({ scrollY, ...props }) {
+export default function Scene({ scrollY, useImageBackground = false, ...props }) {
   return (
-    <Canvas {...props}
+    <Canvas
+      {...props}
       onCreated={(state) => {
-        state.gl.toneMapping = THREE.AgXToneMapping
+        state.gl.toneMapping = THREE.ACESFilmicToneMapping
         state.gl.physicallyCorrectLights = true
-        state.scene.background = new THREE.Color(0x000000) // <<< important
+
+        if (useImageBackground) {
+          const textureLoader = new THREE.TextureLoader()
+          textureLoader.load('videos/background2.png', (texture) => {
+            state.scene.background = texture
+          })
+        } else {
+          state.scene.background = new THREE.Color(0x000000)
+        }
       }}
     >
-      <CoastalParticles scrollY={scrollY} />
+      <CoastalParticlesWrapper />
       <Preload all />
     </Canvas>
   )
