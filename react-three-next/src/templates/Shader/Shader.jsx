@@ -28,7 +28,8 @@ const CoastalShaderMaterial = shaderMaterial(
       displacedPosition.x += sin(uTime + velocity.x * 10.0) * 0.02;
       displacedPosition.y += cos(uTime + velocity.y * 10.0) * 0.02;
 
-      displacedPosition += velocity * uSeaLevel * 24.0;
+      float visualSeaLevel = pow(uSeaLevel, 0.8);
+      displacedPosition += velocity * visualSeaLevel * 10.0;
 
       gl_Position = projectionMatrix * modelViewMatrix * vec4(displacedPosition, 1.0);
 
@@ -37,10 +38,11 @@ const CoastalShaderMaterial = shaderMaterial(
   `,
   // Fragment Shader
   `
-    precision highp float;
+   precision highp float;
 
 uniform sampler2D videoTexture;
 uniform float uSeaLevel;
+
 varying vec2 vUv;
 varying vec3 vPosition;
 
@@ -55,20 +57,33 @@ float starShape(vec2 uv, int spikes, float innerRadius, float outerRadius) {
   return smoothstep(starRadius, starRadius - 0.02, radius);
 }
 
+vec3 enhanceColor(vec3 color, float satBoost, float contrast, float brightness) {
+  // Convert to grayscale for desaturation handling
+  float gray = dot(color, vec3(0.299, 0.587, 0.114));
+  color = mix(vec3(gray), color, satBoost);
+
+  color = (color - 0.5) * contrast + 0.5;
+
+  color *= brightness;
+
+  return color;
+}
+
 void main() {
-  // Create a star shape mask
   float star = starShape(gl_PointCoord, 5, 0.2, 0.8);
+  if (star < 0.1) discard;
 
-  if (star < 0.1) discard; // Discard outside the star
+  vec4 texColor = texture2D(videoTexture, vUv);
 
-  vec4 color = texture2D(videoTexture, vUv);
+  float saturation = 1.6;
+  float contrast = 1.3;
+  float brightness = 1.1;
 
-  float brightness = 1.0;
-  color.rgb *= brightness;
+  vec3 enhancedColor = enhanceColor(texColor.rgb, saturation, contrast, brightness);
 
   vec3 tintColor = vec3(0.8, 0.6, 1.0);
   float tintStrength = uSeaLevel * 0.9;
-  color.rgb = mix(color.rgb, tintColor, tintStrength);
+  enhancedColor = mix(enhancedColor, tintColor, tintStrength);
 
   float distanceFromCenter = length(vPosition.xy);
   float colorMixStrength = smoothstep(0.0, 1.0, distanceFromCenter * 0.1);
@@ -77,16 +92,14 @@ void main() {
   vec3 endColor = vec3(1.0, 0.2, 0.6);
   vec3 gradientColor = mix(startColor, endColor, colorMixStrength);
 
-  color.rgb = mix(color.rgb, gradientColor, colorMixStrength);
+  enhancedColor = mix(enhancedColor, gradientColor, colorMixStrength);
 
   float opacity = 1.0 - smoothstep(0.0, 1.0, distanceFromCenter * 0.5);
-  color.a *= opacity;
-
   float blurFactor = pow(uSeaLevel, 2.5) * 0.5;
-  color.rgb += blurFactor;
 
-  gl_FragColor = color;
+  gl_FragColor = vec4(enhancedColor + blurFactor, opacity);
 }
+
 
   `
 )

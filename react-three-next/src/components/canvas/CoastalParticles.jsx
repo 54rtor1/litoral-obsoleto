@@ -1,30 +1,41 @@
 import * as THREE from 'three'
 import { useVideoTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useRef, useMemo, Suspense } from 'react'
+import { useRef, useMemo, useEffect } from 'react'
 import useScrollStore from '@/stores/scrollStore'
-import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import CoastalShaderMaterial from '@/templates/Shader/Shader.jsx'
 
-function CoastalParticles() {
+function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
   const shaderRef = useRef()
   const { seaLevel } = useScrollStore()
 
-  const videoTexture = useVideoTexture('/videos/coastal.mp4', {
+  const videoTexture = useVideoTexture(videoUrl, {
     autoplay: true,
     loop: true,
-  })
+    muted: true,
+    playsInline: true,
+    preload: "metadata",
+    crossOrigin: 'anonymous',
+  });
 
-  const [geometry, scale] = useMemo(() => {
+  useEffect(() => {
+    if (videoTexture) {
+      videoTexture.minFilter = THREE.LinearFilter
+      videoTexture.magFilter = THREE.LinearFilter
+      videoTexture.generateMipmaps = false
+      videoTexture.encoding = THREE.sRGBEncoding
+    }
+  }, [videoTexture])
+
+  const particles = useMemo(() => {
     const count = 512 * 512
     const positions = new Float32Array(count * 3)
     const uvs = new Float32Array(count * 2)
     const velocities = new Float32Array(count * 3)
 
-    let aspectRatio = 1
-    if (videoTexture?.image?.videoWidth && videoTexture?.image?.videoHeight) {
-      aspectRatio = videoTexture.image.videoWidth / videoTexture.image.videoHeight
-    }
+    const aspectRatio = videoTexture?.image
+      ? videoTexture.image.videoWidth / videoTexture.image.videoHeight
+      : 1
 
     let i3 = 0
     let i2 = 0
@@ -54,9 +65,7 @@ function CoastalParticles() {
     geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
     geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3))
 
-    const scale = [aspectRatio * 2, 2, 1]
-
-    return [geometry, scale]
+    return geometry
   }, [videoTexture])
 
   useFrame(({ clock }) => {
@@ -67,7 +76,7 @@ function CoastalParticles() {
   })
 
   return (
-    <points geometry={geometry} scale={scale}>
+    <points geometry={particles} position={position}>
       <coastalShaderMaterial
         ref={shaderRef}
         transparent
@@ -80,19 +89,4 @@ function CoastalParticles() {
   )
 }
 
-
-export default function CoastalParticlesWrapper() {
-  return (
-    <Suspense fallback={null}>
-      <CoastalParticles />
-      <EffectComposer>
-        <Bloom
-          intensity={1.5}
-          luminanceThreshold={0.0}
-          luminanceSmoothing={0.9}
-          mipmapBlur
-        />
-      </EffectComposer>
-    </Suspense>
-  )
-}
+export default CoastalParticles
