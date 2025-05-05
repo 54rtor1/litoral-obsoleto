@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Canvas } from '@react-three/fiber'
 import { Preload } from '@react-three/drei'
 import * as THREE from 'three'

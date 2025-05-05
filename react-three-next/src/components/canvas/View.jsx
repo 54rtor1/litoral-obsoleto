@@ -27,5 +27,4 @@ export function View({ children, ...props }) {
       {children}
     </Canvas>
   )
-  )
 }
