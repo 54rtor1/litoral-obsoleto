@@ -52,7 +52,7 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
   }, [videoTexture])
 
   const particles = useMemo(() => {
-    const count = 512 * 512
+    const count = 128 * 128
     const positions = new Float32Array(count * 3)
     const uvs = new Float32Array(count * 2)
     const velocities = new Float32Array(count * 3)
@@ -63,17 +63,17 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
 
     let i3 = 0
     let i2 = 0
-    for (let i = 0; i < 512; i++) {
-      for (let j = 0; j < 512; j++) {
-        const baseX = ((i / 512) * 2 - 1) * aspectRatio
-        const baseY = (j / 512) * 2 - 1
+    for (let i = 0; i < 128; i++) {
+      for (let j = 0; j < 128; j++) {
+        const baseX = ((i / 128) * 2 - 1) * aspectRatio
+        const baseY = (j / 128) * 2 - 1
 
         positions[i3] = baseX
         positions[i3 + 1] = baseY
         positions[i3 + 2] = 0
 
-        uvs[i2] = i / 512
-        uvs[i2 + 1] = j / 512
+        uvs[i2] = i / 128
+        uvs[i2 + 1] = j / 128
 
         velocities[i3] = (Math.random() - 0.5) * 0.5
         velocities[i3 + 1] = (Math.random() - 0.5) * 0.5
