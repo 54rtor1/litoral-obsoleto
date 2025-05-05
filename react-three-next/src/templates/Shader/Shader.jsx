@@ -11,6 +11,7 @@ const CoastalShaderMaterial = shaderMaterial(
   },
   // Vertex Shader
   `
+    #pragma vscode_glsllint_stage: vert
     precision highp float;
 
     uniform float uTime;
@@ -38,69 +39,68 @@ const CoastalShaderMaterial = shaderMaterial(
   `,
   // Fragment Shader
   `
-   precision highp float;
+    #pragma vscode_glsllint_stage: frag
+    precision highp float;
 
-uniform sampler2D videoTexture;
-uniform float uSeaLevel;
+    uniform sampler2D videoTexture;
+    uniform float uSeaLevel;
 
-varying vec2 vUv;
-varying vec3 vPosition;
+    varying vec2 vUv;
+    varying vec3 vPosition;
 
-float starShape(vec2 uv, int spikes, float innerRadius, float outerRadius) {
-  vec2 centerUv = uv - 0.5;
-  float angle = atan(centerUv.y, centerUv.x);
-  float radius = length(centerUv);
+    float starShape(vec2 uv, int spikes, float innerRadius, float outerRadius) {
+      vec2 centerUv = uv - 0.5;
+      float angle = atan(centerUv.y, centerUv.x);
+      float radius = length(centerUv);
 
-  float spike = abs(cos(float(spikes) * angle));
-  float starRadius = mix(innerRadius, outerRadius, spike);
+      float spike = abs(cos(float(spikes) * angle));
+      float starRadius = mix(innerRadius, outerRadius, spike);
 
-  return smoothstep(starRadius, starRadius - 0.02, radius);
-}
+      return smoothstep(starRadius, starRadius - 0.02, radius);
+    }
 
-vec3 enhanceColor(vec3 color, float satBoost, float contrast, float brightness) {
-  // Convert to grayscale for desaturation handling
-  float gray = dot(color, vec3(0.299, 0.587, 0.114));
-  color = mix(vec3(gray), color, satBoost);
+    vec3 enhanceColor(vec3 color, float satBoost, float contrast, float brightness) {
+      // Convert to grayscale for desaturation handling
+      float gray = dot(color, vec3(0.299, 0.587, 0.114));
+      color = mix(vec3(gray), color, satBoost);
 
-  color = (color - 0.5) * contrast + 0.5;
+      color = (color - 0.5) * contrast + 0.5;
 
-  color *= brightness;
+      color *= brightness;
 
-  return color;
-}
+      return color;
+    }
 
-void main() {
-  float star = starShape(gl_PointCoord, 5, 0.2, 0.8);
-  if (star < 0.1) discard;
+    void main() {
+      float star = starShape(gl_PointCoord, 5, 0.2, 0.8);
+      if (star < 0.1) discard;
 
-  vec4 texColor = texture2D(videoTexture, vUv);
+      vec4 texColor = texture2D(videoTexture, vUv);
 
-  float saturation = 1.6;
-  float contrast = 1.3;
-  float brightness = 1.1;
+      float saturation = 1.6;
+      float contrast = 1.3;
+      float brightness = 1.1;
 
-  vec3 enhancedColor = enhanceColor(texColor.rgb, saturation, contrast, brightness);
+      vec3 enhancedColor = enhanceColor(texColor.rgb, saturation, contrast, brightness);
 
-  vec3 tintColor = vec3(0.8, 0.6, 1.0);
-  float tintStrength = uSeaLevel * 0.9;
-  enhancedColor = mix(enhancedColor, tintColor, tintStrength);
+      vec3 tintColor = vec3(0.8, 0.6, 1.0);
+      float tintStrength = uSeaLevel * 0.9;
+      enhancedColor = mix(enhancedColor, tintColor, tintStrength);
 
-  float distanceFromCenter = length(vPosition.xy);
-  float colorMixStrength = smoothstep(0.0, 1.0, distanceFromCenter * 0.1);
+      float distanceFromCenter = length(vPosition.xy);
+      float colorMixStrength = smoothstep(0.0, 1.0, distanceFromCenter * 0.1);
 
-  vec3 startColor = vec3(0.0, 0.8, 1.0);
-  vec3 endColor = vec3(1.0, 0.2, 0.6);
-  vec3 gradientColor = mix(startColor, endColor, colorMixStrength);
+      vec3 startColor = vec3(0.0, 0.8, 1.0);
+      vec3 endColor = vec3(1.0, 0.2, 0.6);
+      vec3 gradientColor = mix(startColor, endColor, colorMixStrength);
 
-  enhancedColor = mix(enhancedColor, gradientColor, colorMixStrength);
+      enhancedColor = mix(enhancedColor, gradientColor, colorMixStrength);
 
-  float opacity = 1.0 - smoothstep(0.0, 1.0, distanceFromCenter * 0.5);
-  float blurFactor = pow(uSeaLevel, 2.5) * 0.5;
+      float opacity = 1.0 - smoothstep(0.0, 1.0, distanceFromCenter * 0.5);
+      float blurFactor = pow(uSeaLevel, 2.5) * 0.5;
 
-  gl_FragColor = vec4(enhancedColor + blurFactor, opacity);
-}
-
-
+      gl_FragColor = vec4(enhancedColor + blurFactor, opacity);
+    }
   `
 )
 
