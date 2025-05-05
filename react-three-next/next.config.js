@@ -6,10 +6,10 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
  * A fork of 'next-pwa' that has app directory support
  * @see https://github.com/shadowwalker/next-pwa/issues/424#issuecomment-1332258575
  */
-const withPWA = require('@ducanh2912/next-pwa').default({
-  dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
-})
+// const withPWA = require('@ducanh2912/next-pwa').default({
+//   dest: 'public',
+//   disable: process.env.NODE_ENV === 'development',
+// })
 
 const nextConfig = {
   // uncomment the following snippet if using styled components
@@ -25,30 +25,45 @@ const nextConfig = {
     }
     // audio support
     config.module.rules.push({
-      test: /\.(ogg|mp3|wav|mpe?g)$/i,
-      exclude: config.exclude,
+      test: /\.(glsl|vs|fs|vert|frag)$/,
       use: [
         {
-          loader: require.resolve('url-loader'),
+          loader: 'raw-loader',
           options: {
-            limit: config.inlineImageLimit,
-            fallback: require.resolve('file-loader'),
-            publicPath: `${config.assetPrefix}/_next/static/images/`,
-            outputPath: `${isServer ? '../' : ''}static/images/`,
-            name: '[name]-[hash].[ext]',
-            esModule: config.esModule || false,
-          },
+            esModule: false,
+          }
         },
-      ],
-    })
+        {
+          loader: 'glslify-loader',
+          options: {
+            transform: [
+              ['glslify-hex', { transformOptions: { preserveVariableName: true } }]
+            ]
+          }
+        }
+      ]
+    });
 
     // shader support
     config.module.rules.push({
       test: /\.(glsl|vs|fs|vert|frag)$/,
-      exclude: /node_modules/,
-      use: ['raw-loader', 'glslify-loader'],
-    })
-
+      use: [
+        {
+          loader: 'raw-loader',
+          options: {
+            esModule: false,
+          }
+        },
+        {
+          loader: 'glslify-loader',
+          options: {
+            transform: [
+              ['glslify-hex', { transformOptions: { preserveVariableName: true } }]
+            ]
+          }
+        }
+      ]
+    });
     return config
   },
 }
@@ -56,19 +71,19 @@ const nextConfig = {
 const KEYS_TO_OMIT = ['webpackDevMiddleware', 'configOrigin', 'target', 'analyticsId', 'webpack5', 'amp', 'assetPrefix']
 
 module.exports = (_phase, { defaultConfig }) => {
-  const plugins = [[withPWA], [withBundleAnalyzer, {}]]
+  const plugins = [[withBundleAnalyzer, {}]];
 
   const wConfig = plugins.reduce((acc, [plugin, config]) => plugin({ ...acc, ...config }), {
     ...defaultConfig,
     ...nextConfig,
-  })
+  });
 
-  const finalConfig = {}
+  const finalConfig = {};
   Object.keys(wConfig).forEach((key) => {
     if (!KEYS_TO_OMIT.includes(key)) {
-      finalConfig[key] = wConfig[key]
+      finalConfig[key] = wConfig[key];
     }
-  })
+  });
 
-  return finalConfig
-}
+  return finalConfig;
+};
