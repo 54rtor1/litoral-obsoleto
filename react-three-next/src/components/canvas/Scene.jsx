@@ -8,14 +8,30 @@ export default function Scene({ scrollY, useImageBackground = false, ...props })
     <Canvas
       {...props}
       onCreated={(state) => {
-        state.gl.toneMapping = THREE.ACESFilmicToneMapping
-        state.gl.physicallyCorrectLights = true
 
+        state.gl.toneMapping = THREE.ACESFilmicToneMapping
+        state.gl.toneMappingExposure = 1.2
+        state.gl.physicallyCorrectLights = true
+        state.gl.outputColorSpace = THREE.SRGBColorSpace
+
+        // Background handling
         if (useImageBackground) {
           const textureLoader = new THREE.TextureLoader()
-          textureLoader.load('videos/background2.png', (texture) => {
-            state.scene.background = texture
-          })
+          textureLoader.setCrossOrigin('anonymous')
+
+          textureLoader.load(
+            '/videos/background2.png',
+            (texture) => {
+              texture.colorSpace = THREE.SRGBColorSpace
+              texture.minFilter = THREE.LinearFilter
+              state.scene.background = texture
+            },
+            undefined,
+            (err) => {
+              console.error('Background load failed:', err)
+              state.scene.background = new THREE.Color(0x000000)
+            }
+          )
         } else {
           state.scene.background = new THREE.Color(0x000000)
         }

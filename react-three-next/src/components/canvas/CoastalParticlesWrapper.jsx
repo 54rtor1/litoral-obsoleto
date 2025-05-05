@@ -4,13 +4,13 @@ import CoastalParticles from './CoastalParticles'
 
 const videoSources = [
   '/videos/coastal1.1.mp4',
-  '/videos/Coastal1.2.mp4',
-  '/videos/Coastal1.3.mp4',
-  '/videos/Coastal1.4.mp4',
-  '/videos/Coastal1.5.mp4',
-  '/videos/Coastal1.6.mp4',
+  '/videos/coastal1.2.mp4',
+  '/videos/coastal1.3.mp4',
+  '/videos/coastal1.4.mp4',
+  '/videos/coastal1.5.mp4',
+  '/videos/coastal1.6.mp4',
   '/videos/coastal1.1.mp4',
-  '/videos/Coastal1.2.mp4',
+  '/videos/coastal1.2.mp4',
 
 ]
 
