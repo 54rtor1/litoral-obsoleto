@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as THREE from 'three'
 import { useVideoTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
