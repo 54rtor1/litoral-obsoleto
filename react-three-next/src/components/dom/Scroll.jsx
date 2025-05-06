@@ -48,13 +48,15 @@ export default function Scroll({ children }) {
         seaLevel = start.value + t * (end.value - start.value)
       }
 
-      const fadeIn = Math.pow(Math.min(1, Math.max(0, progress * 5)), 1.5)
+      const fadeProgress = Math.min(1, Math.max(0, (progress - 0.02) / 0.08))
+      const fadeIn = Math.pow(fadeProgress, 1.5)
       seaLevel *= fadeIn
 
       useScrollStore.getState().setScrollState({
         progress,
         year: targetYear,
         seaLevel,
+        targetSeaLevel: seaLevel,
       })
     })
 

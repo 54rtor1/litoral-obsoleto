@@ -4,11 +4,19 @@ import { useVideoTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useRef, useMemo, useEffect } from 'react'
 import useScrollStore from '@/stores/scrollStore'
+import { scenarios } from '@/stores/scenarioStore'
 import CoastalShaderMaterial from '@/templates/Shader/Shader.jsx'
+import useScenarioStore from '@/stores/scenarioStore'
+
 
 function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
   const shaderRef = useRef()
-  const { seaLevel } = useScrollStore()
+  const seaLevel = useScrollStore((state) => state.seaLevel);
+  const targetSeaLevel = useScrollStore((state) => state.targetSeaLevel);
+  const variantRef = useRef(index)
+  const { scenario } = useScenarioStore()
+  const setYear = useScrollStore((state) => state.setYear);
+
 
   const videoTexture = useVideoTexture(videoUrl, {
     loop: true,
@@ -71,11 +79,32 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
   }, [videoTexture])
 
   useFrame(({ clock }) => {
-    if (shaderRef.current) {
-      shaderRef.current.uniforms.uTime.value = clock.elapsedTime
-      shaderRef.current.uniforms.uSeaLevel.value = seaLevel
-    }
-  })
+    if (!shaderRef.current) return;
+
+    // Time update for the shader
+    shaderRef.current.uniforms.uTime.value = clock.elapsedTime;
+
+    // Smooth sea level transition
+    const currentSea = shaderRef.current.uniforms.uSeaLevel.value;
+    const smoothSea = THREE.MathUtils.lerp(currentSea, targetSeaLevel, 0.05);
+    shaderRef.current.uniforms.uSeaLevel.value = smoothSea;
+
+    // Smooth variant (scenario interpolation)
+    const targetVariant = Object.keys(scenarios).indexOf(scenario);
+    variantRef.current = THREE.MathUtils.lerp(variantRef.current, targetVariant, 0.05);
+    shaderRef.current.uniforms.uVariant.value = variantRef.current;
+
+    // Expose to window (debug)
+    window.shaderSeaLevel = smoothSea;
+
+    // Estimate year based on sea level
+    const baseYear = 2020;
+    const maxYear = 2100;
+    const maxSeaLevel = 1.0;
+    const estimatedYear = Math.floor(baseYear + (maxYear - baseYear) * (smoothSea / maxSeaLevel));
+  });
+
+
 
   return (
     <points geometry={particles} position={position}>
