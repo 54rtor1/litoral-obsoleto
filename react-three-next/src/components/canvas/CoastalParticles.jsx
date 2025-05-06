@@ -11,12 +11,11 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
   const { seaLevel } = useScrollStore()
 
   const videoTexture = useVideoTexture(videoUrl, {
-    autoplay: true,
     loop: true,
     muted: true,
-    playsInline: true,
+    start: true,
     crossOrigin: 'anonymous',
-    preload: 'auto',
+    playsInline: true,
   })
 
   useEffect(() => {
@@ -26,28 +25,7 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
       videoTexture.minFilter = THREE.LinearFilter
       videoTexture.magFilter = THREE.LinearFilter
       videoTexture.generateMipmaps = false
-      videoTexture.encoding = THREE.sRGBEncoding
-
-      videoTexture.needsUpdate = true
-
-      const playPromise = video.play()
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => console.log('Video autoplay started'))
-          .catch(err => {
-            console.error('Autoplay blocked:', err)
-          })
-      }
-
-      video.onerror = (e) => console.error('Video error:', e)
-      video.onstalled = (e) => console.warn('Video stalled:', e)
-      video.onloadstart = () => console.log('Video loading started')
-
-      return () => {
-        video.pause()
-        video.removeAttribute('src')
-        video.load()
-      }
+      videoTexture.colorSpace = THREE.SRGBColorSpace
     }
   }, [videoTexture])
 
