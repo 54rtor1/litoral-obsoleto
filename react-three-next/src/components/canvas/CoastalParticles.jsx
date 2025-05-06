@@ -37,6 +37,13 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
     }
   }, [videoTexture])
 
+  useEffect(() => {
+    if (shaderRef.current) {
+      shaderRef.current.uniforms.uVariant.value = Object.keys(scenarios).indexOf(scenario);
+      shaderRef.current.uniforms.uSeaLevel.value = targetSeaLevel;
+    }
+  }, [scenario, targetSeaLevel]);
+
   const particles = useMemo(() => {
     const count = 512 * 512
     const positions = new Float32Array(count * 3)
@@ -78,30 +85,12 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
     return geometry
   }, [videoTexture])
 
-  useFrame(({ clock }) => {
-    if (!shaderRef.current) return;
+  useFrame(() => {
+    useScrollStore.getState().updateSeaLevel();
 
-    // Time update for the shader
-    shaderRef.current.uniforms.uTime.value = clock.elapsedTime;
-
-    // Smooth sea level transition
-    const currentSea = shaderRef.current.uniforms.uSeaLevel.value;
-    const smoothSea = THREE.MathUtils.lerp(currentSea, targetSeaLevel, 0.05);
-    shaderRef.current.uniforms.uSeaLevel.value = smoothSea;
-
-    // Smooth variant (scenario interpolation)
-    const targetVariant = Object.keys(scenarios).indexOf(scenario);
-    variantRef.current = THREE.MathUtils.lerp(variantRef.current, targetVariant, 0.05);
-    shaderRef.current.uniforms.uVariant.value = variantRef.current;
-
-    // Expose to window (debug)
-    window.shaderSeaLevel = smoothSea;
-
-    // Estimate year based on sea level
-    const baseYear = 2020;
-    const maxYear = 2100;
-    const maxSeaLevel = 1.0;
-    const estimatedYear = Math.floor(baseYear + (maxYear - baseYear) * (smoothSea / maxSeaLevel));
+    if (shaderRef.current) {
+      shaderRef.current.uniforms.uSeaLevel.value = useScrollStore.getState().seaLevel;
+    }
   });
 
 
