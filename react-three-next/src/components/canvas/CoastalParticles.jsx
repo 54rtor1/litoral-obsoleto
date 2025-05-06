@@ -11,12 +11,11 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
   const { seaLevel } = useScrollStore()
 
   const videoTexture = useVideoTexture(videoUrl, {
-    autoplay: true,
     loop: true,
     muted: true,
-    playsInline: true,
+    start: true,
     crossOrigin: 'anonymous',
-    preload: 'auto',
+    playsInline: true,
   })
 
   useEffect(() => {
