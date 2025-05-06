@@ -86,6 +86,7 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
         videoTexture={videoTexture}
         uSeaLevel={seaLevel}
         uTime={0}
+        uVariant={index}
       />
     </points>
   )
