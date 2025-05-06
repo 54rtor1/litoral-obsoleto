@@ -23,26 +23,11 @@ const useScenarioStore = create((set) => ({
   scenario: 'ssp245',
   metadata: scenarios.ssp245,
   setScenario: (scenario) => {
-    const { setTargetSeaLevel } = useScrollStore.getState();
-
-    // Set the target sea level directly based on the new scenario
-    const { seaLevel } = useScrollStore.getState();
-    setTargetSeaLevel(seaLevel);
-
-    // Optionally, adjust the sea level transition logic here (e.g., using an offset)
-    const offset = 0;
-    const newTarget = seaLevel + offset;
-
-    // Set the target sea level directly for the transition
-    setTargetSeaLevel(newTarget);
-
-    // Update the scenario state
     set({
       scenario,
       metadata: scenarios[scenario]
     });
   }
-
 }));
 
 export default useScenarioStore

@@ -6,12 +6,15 @@ import Scroll from '@/components/dom/Scroll'
 import ScenarioFooter from '@/components/dom/ScenarioFooter'
 import ScenarioSelector from './ScenarioSelector'
 import Info from './Info'
+import useUpdateSeaLevelOnScenarioChange from '@/templates/hooks/useUpdateSeaLevel';
+
 
 const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
 
 const Layout = ({ children }) => {
   const ref = useRef()
   const [scrollY, setScrollY] = useState(0)
+  useUpdateSeaLevelOnScenarioChange();
 
   return (
     <div ref={ref} style={{ position: 'relative', width: '100%', height: '100%', overflow: 'auto' }}>
