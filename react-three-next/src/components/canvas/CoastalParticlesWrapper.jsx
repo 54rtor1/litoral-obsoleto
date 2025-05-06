@@ -20,7 +20,6 @@ export default function CoastalParticlesWrapper() {
       const randomZ = (Math.random() - 0.5) * 4
 
       return {
-        key: i,
         videoUrl: src,
         index: i,
         position: [randomX, randomY, randomZ],
@@ -30,8 +29,8 @@ export default function CoastalParticlesWrapper() {
 
   return (
     <Suspense fallback={null}>
-      {particleConfigs.map((config) => (
-        <CoastalParticles key={config.key} {...config} />
+      {particleConfigs.map((config, i) => (
+        <CoastalParticles key={i} {...config} />
       ))}
     </Suspense>
   )
