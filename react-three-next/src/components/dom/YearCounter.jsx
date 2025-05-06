@@ -1,7 +1,8 @@
 import useScrollStore from '@/stores/scrollStore';
 
 export default function YearCounter() {
-  const { year, seaLevel } = useScrollStore();
+  const year = useScrollStore((state) => state.year);
+  const seaLevel = useScrollStore((state) => state.seaLevel);
 
   return (
     <div className="text-sm text-cyan-200">
