@@ -44,10 +44,6 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
       const currentYear = useScrollStore.getState().year;
       let newSeaLevel = useScrollStore.getState().seaLevelByScenario[scenario] || 0;
 
-      if (currentYear === 2020) {
-        newSeaLevel = 0.0;
-      }
-
       startTransition(newSeaLevel);
 
       useScrollStore.getState().setSeaLevelByScenario(scenario, newSeaLevel);

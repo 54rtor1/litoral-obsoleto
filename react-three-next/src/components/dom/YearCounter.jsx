@@ -9,7 +9,10 @@ export default function YearCounter() {
   const { year, seaLevelByScenario } = useScrollStore()
   const { scenario } = useScenarioStore()
   const [currentScenario, setCurrentScenario] = useState(scenario)
-  const seaLevel = seaLevelByScenario[scenario] || 0
+
+  const rawSeaLevel = seaLevelByScenario[scenario] || 0
+
+  const displaySeaLevel = Math.round(year) === 2020 ? 0.05 : rawSeaLevel
 
   useEffect(() => {
     setCurrentScenario(scenario)
@@ -27,7 +30,7 @@ export default function YearCounter() {
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.4 }}
           >
-            {seaLevel.toFixed(2)}m
+            {displaySeaLevel.toFixed(2)}m
           </motion.span>
         </AnimatePresence>
       </span>
