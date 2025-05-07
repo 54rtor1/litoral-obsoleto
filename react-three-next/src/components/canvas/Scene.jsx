@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Canvas } from '@react-three/fiber'
 import { Preload } from '@react-three/drei'
 import * as THREE from 'three'
@@ -15,7 +14,6 @@ export default function Scene({ scrollY, useImageBackground = false, ...props })
         state.gl.physicallyCorrectLights = true
         state.gl.outputColorSpace = THREE.SRGBColorSpace
 
-        // Background handling
         if (useImageBackground) {
           const textureLoader = new THREE.TextureLoader()
           textureLoader.setCrossOrigin('anonymous')
@@ -29,6 +27,7 @@ export default function Scene({ scrollY, useImageBackground = false, ...props })
             },
             undefined,
             (err) => {
+              // eslint-disable-next-line no-console
               console.error('Background load failed:', err)
               state.scene.background = new THREE.Color(0x000000)
             }
