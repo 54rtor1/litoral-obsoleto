@@ -21,6 +21,8 @@ function getSeaLevelFromScenario(scenario, year) {
   const scenarioInfo = scenarioData.scenarios[scenario];
   if (!scenarioInfo) return 0;
 
+  if (year === 2020) return 0.0;
+
   const quantiles = scenarioInfo.confidence.medium.quantiles['50'].data;
 
   for (let i = 0; i < quantiles.length - 1; i++) {
