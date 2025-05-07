@@ -1,5 +1,4 @@
-/* eslint-disable no-console */
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import useScrollStore from '@/stores/scrollStore';
 import useScenarioStore from '@/stores/scenarioStore';
 import scenarioData from '@/data/sea-level-recife-nested.json';
@@ -12,7 +11,6 @@ function useUpdateSeaLevelOnScenarioChange() {
   useEffect(() => {
     if (scenario && year) {
       const seaLevelForScenario = getSeaLevelFromScenario(scenario, year);
-      console.log(`Updating sea level for ${scenario} at year ${year}: ${seaLevelForScenario}m`);
       setSeaLevelByScenario(scenario, seaLevelForScenario);
     }
   }, [scenario, year, setSeaLevelByScenario]);
@@ -31,7 +29,6 @@ function getSeaLevelFromScenario(scenario, year) {
     if (year >= a.year && year <= b.year) {
       const t = (year - a.year) / (b.year - a.year);
       const interpolated = a.value + t * (b.value - a.value);
-      console.log(`Interpolated sea level for ${scenario} in ${year}: ${interpolated}m`);
       return interpolated;
     }
   }
