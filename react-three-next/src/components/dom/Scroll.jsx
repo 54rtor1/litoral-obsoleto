@@ -12,7 +12,7 @@ export default function Scroll({ children }) {
 
   useEffect(() => {
     const scenarioData =
-      data.scenarios?.[scenario]?.confidence?.medium?.quantiles?.['50']?.data // Use median (q50)
+      data.scenarios?.[scenario]?.confidence?.medium?.quantiles?.['50']?.data
 
     if (!scenarioData) return
 
@@ -48,13 +48,15 @@ export default function Scroll({ children }) {
         seaLevel = start.value + t * (end.value - start.value)
       }
 
-      const fadeIn = Math.pow(Math.min(1, Math.max(0, progress * 5)), 1.5)
+      const fadeProgress = Math.min(1, Math.max(0, (progress - 0.02) / 0.08))
+      const fadeIn = Math.pow(fadeProgress, 1.5)
       seaLevel *= fadeIn
 
       useScrollStore.getState().setScrollState({
         progress,
         year: targetYear,
         seaLevel,
+        targetSeaLevel: seaLevel,
       })
     })
 
