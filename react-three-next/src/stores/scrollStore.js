@@ -12,7 +12,7 @@ const useScrollStore = create((set, get) => ({
 
   updateSeaLevel: () => {
     const { seaLevel, targetSeaLevel } = get();
-    const lerped = seaLevel + (targetSeaLevel - seaLevel) * 0.05;
+    const lerped = seaLevel + (targetSeaLevel - seaLevel) * 0.5;
     if (Math.abs(lerped - targetSeaLevel) < 0.001) {
       set({ seaLevel: targetSeaLevel });
     } else {
