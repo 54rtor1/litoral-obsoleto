@@ -41,13 +41,20 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
     if (shaderRef.current) {
       shaderRef.current.uniforms.uVariant.value = Object.keys(scenarios).indexOf(scenario);
 
-      const newSeaLevel = useScrollStore.getState().seaLevelByScenario[scenario] || 0;
+      const currentYear = useScrollStore.getState().year; // assuming year is stored in scrollStore
+      let newSeaLevel = useScrollStore.getState().seaLevelByScenario[scenario] || 0;
+
+      if (currentYear === 2020) {
+        newSeaLevel = 0.0;
+      }
+
       useScrollStore.getState().setScrollState({
         seaLevel: newSeaLevel,
         targetSeaLevel: newSeaLevel,
       });
     }
   }, [scenario]);
+
 
   const particles = useMemo(() => {
     const count = 512 * 512
