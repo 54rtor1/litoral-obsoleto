@@ -40,9 +40,14 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
   useEffect(() => {
     if (shaderRef.current) {
       shaderRef.current.uniforms.uVariant.value = Object.keys(scenarios).indexOf(scenario);
-      shaderRef.current.uniforms.uSeaLevel.value = targetSeaLevel;
+
+      const newSeaLevel = useScrollStore.getState().seaLevelByScenario[scenario] || 0;
+      useScrollStore.getState().setScrollState({
+        seaLevel: newSeaLevel,
+        targetSeaLevel: newSeaLevel,
+      });
     }
-  }, [scenario, targetSeaLevel]);
+  }, [scenario]);
 
   const particles = useMemo(() => {
     const count = 512 * 512

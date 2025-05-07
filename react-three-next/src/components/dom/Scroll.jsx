@@ -12,7 +12,7 @@ export default function Scroll({ children }) {
 
   useEffect(() => {
     const scenarioData =
-      data.scenarios?.[scenario]?.confidence?.medium?.quantiles?.['50']?.data // Use median (q50)
+      data.scenarios?.[scenario]?.confidence?.medium?.quantiles?.['50']?.data
 
     if (!scenarioData) return
 
