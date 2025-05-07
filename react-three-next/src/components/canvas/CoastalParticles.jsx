@@ -16,7 +16,7 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
   const variantRef = useRef(index)
   const { scenario } = useScenarioStore()
   const setYear = useScrollStore((state) => state.setYear);
-
+  const startTransition = useScrollStore((state) => state.startTransition);
 
   const videoTexture = useVideoTexture(videoUrl, {
     loop: true,
@@ -25,6 +25,7 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
     crossOrigin: 'anonymous',
     playsInline: true,
   })
+
 
   useEffect(() => {
     if (videoTexture?.image) {
@@ -41,19 +42,18 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
     if (shaderRef.current) {
       shaderRef.current.uniforms.uVariant.value = Object.keys(scenarios).indexOf(scenario);
 
-      const currentYear = useScrollStore.getState().year; // assuming year is stored in scrollStore
+      const currentYear = useScrollStore.getState().year;
       let newSeaLevel = useScrollStore.getState().seaLevelByScenario[scenario] || 0;
 
       if (currentYear === 2020) {
         newSeaLevel = 0.0;
       }
 
-      useScrollStore.getState().setScrollState({
-        seaLevel: newSeaLevel,
-        targetSeaLevel: newSeaLevel,
-      });
+      startTransition(newSeaLevel);
+
+      useScrollStore.getState().setSeaLevelByScenario(scenario, newSeaLevel);
     }
-  }, [scenario]);
+  }, [scenario, startTransition]);
 
 
   const particles = useMemo(() => {
