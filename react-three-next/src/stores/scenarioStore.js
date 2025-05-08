@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-
+import { create } from 'zustand'
+import useScrollStore from './scrollStore'
 
 export const scenarios = {
   ssp119: {
@@ -22,10 +22,12 @@ export const scenarios = {
 const useScenarioStore = create((set) => ({
   scenario: 'ssp245',
   metadata: scenarios.ssp245,
-  setScenario: (scenario) => set({
-    scenario,
-    metadata: scenarios[scenario]
-  }),
+  setScenario: (scenario) => {
+    set({
+      scenario,
+      metadata: scenarios[scenario]
+    });
+  }
 }));
 
-export default useScenarioStore;
+export default useScenarioStore

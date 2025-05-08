@@ -1,14 +1,21 @@
-/* eslint-disable no-console */
 import * as THREE from 'three'
 import { useVideoTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useRef, useMemo, useEffect } from 'react'
 import useScrollStore from '@/stores/scrollStore'
+import { scenarios } from '@/stores/scenarioStore'
 import CoastalShaderMaterial from '@/templates/Shader/Shader.jsx'
+import useScenarioStore from '@/stores/scenarioStore'
+
 
 function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
   const shaderRef = useRef()
-  const { seaLevel } = useScrollStore()
+  const seaLevel = useScrollStore((state) => state.seaLevel);
+  const targetSeaLevel = useScrollStore((state) => state.targetSeaLevel);
+  const variantRef = useRef(index)
+  const { scenario } = useScenarioStore()
+  const setYear = useScrollStore((state) => state.setYear);
+  const startTransition = useScrollStore((state) => state.startTransition);
 
   const videoTexture = useVideoTexture(videoUrl, {
     loop: true,
@@ -17,6 +24,7 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
     crossOrigin: 'anonymous',
     playsInline: true,
   })
+
 
   useEffect(() => {
     if (videoTexture?.image) {
@@ -28,6 +36,20 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
       videoTexture.colorSpace = THREE.SRGBColorSpace
     }
   }, [videoTexture])
+
+  useEffect(() => {
+    if (shaderRef.current) {
+      shaderRef.current.uniforms.uVariant.value = Object.keys(scenarios).indexOf(scenario);
+
+      const currentYear = useScrollStore.getState().year;
+      let newSeaLevel = useScrollStore.getState().seaLevelByScenario[scenario] || 0;
+
+      startTransition(newSeaLevel);
+
+      useScrollStore.getState().setSeaLevelByScenario(scenario, newSeaLevel);
+    }
+  }, [scenario, startTransition]);
+
 
   const particles = useMemo(() => {
     const count = 512 * 512
@@ -70,12 +92,15 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
     return geometry
   }, [videoTexture])
 
-  useFrame(({ clock }) => {
+  useFrame(() => {
+    useScrollStore.getState().updateSeaLevel();
+
     if (shaderRef.current) {
-      shaderRef.current.uniforms.uTime.value = clock.elapsedTime
-      shaderRef.current.uniforms.uSeaLevel.value = seaLevel
+      shaderRef.current.uniforms.uSeaLevel.value = useScrollStore.getState().seaLevel;
     }
-  })
+  });
+
+
 
   return (
     <points geometry={particles} position={position}>
@@ -86,6 +111,7 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
         videoTexture={videoTexture}
         uSeaLevel={seaLevel}
         uTime={0}
+        uVariant={index}
       />
     </points>
   )

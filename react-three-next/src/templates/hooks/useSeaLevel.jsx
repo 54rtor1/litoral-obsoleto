@@ -8,7 +8,12 @@ export default function useSeaLevel({ scenario = 'ssp245' } = {}) {
     revalidateOnFocus: false,
   });
 
-  const q50 = data?.scenarios?.[scenario]?.confidence?.medium?.quantiles?.['50']?.data; // Median quantile
+  const dataArray = data?.scenarios?.[scenario]?.confidence?.medium?.quantiles?.['50']?.data;
+
+  const q50 = dataArray?.reduce((acc, { year, value }) => {
+    acc[year] = year === 2020 ? 0.0 : value;
+    return acc;
+  }, {});
 
   return {
     data: q50,
