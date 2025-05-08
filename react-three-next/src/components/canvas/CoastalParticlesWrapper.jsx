@@ -10,7 +10,7 @@ const videoSources = [
   '/videos/converted/coastal1.6_converted.mp4',
   '/videos/converted/coastal1.7_converted.mp4',
   '/videos/converted/coastal1.8_converted.mp4',
-  '/videos/converted/coastal2.0_converted.mp4',
+  '/videos/converted/coastal1.9_converted.mp4',
 ]
 
 const MAX_VISIBLE = 9
