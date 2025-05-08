@@ -15,13 +15,21 @@ export default function Scene({ scrollY, useImageBackground = false, ...props })
         state.gl.physicallyCorrectLights = true
         state.gl.outputColorSpace = THREE.SRGBColorSpace
 
-        // Background handling
         if (useImageBackground) {
+          const imagePaths = [
+            '/background1.png',
+            '/background2.png',
+            '/background3.png',
+            '/background4.png'
+          ]
+
+          const chosenImage = imagePaths[Math.floor(Math.random() * imagePaths.length)]
+
           const textureLoader = new THREE.TextureLoader()
           textureLoader.setCrossOrigin('anonymous')
 
           textureLoader.load(
-            '/videos/background2.png',
+            chosenImage,
             (texture) => {
               texture.colorSpace = THREE.SRGBColorSpace
               texture.minFilter = THREE.LinearFilter
@@ -36,7 +44,8 @@ export default function Scene({ scrollY, useImageBackground = false, ...props })
         } else {
           state.scene.background = new THREE.Color(0x000000)
         }
-      }}
+      }
+      }
     >
       <CoastalParticlesWrapper />
       <Preload all />
