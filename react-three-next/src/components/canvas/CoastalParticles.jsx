@@ -18,7 +18,7 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
   const startTransition = useScrollStore((state) => state.startTransition);
 
   const videoTexture = useVideoTexture(videoUrl, {
-    loop: true,
+    loop: false,
     muted: true,
     start: true,
     crossOrigin: 'anonymous',
@@ -34,6 +34,21 @@ function CoastalParticles({ videoUrl, index = 0, position = [0, 0, 0] }) {
       videoTexture.magFilter = THREE.LinearFilter
       videoTexture.generateMipmaps = false
       videoTexture.colorSpace = THREE.SRGBColorSpace
+    }
+  }, [videoTexture])
+
+  useEffect(() => {
+    const video = videoTexture?.image
+    if (video) {
+      const handleEnded = () => {
+        video.currentTime = 0
+        video.play()
+      }
+
+      video.addEventListener('ended', handleEnded)
+      return () => {
+        video.removeEventListener('ended', handleEnded)
+      }
     }
   }, [videoTexture])
 
