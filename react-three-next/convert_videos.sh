@@ -2,8 +2,7 @@
 
 # Array of your video files
 videos=(
-  "coastal1.9.mp4"
-  "coastal1.8.mp4"
+  "coastal1.1.mp4"
 )
 
 # Create output directory if it doesn't exist
