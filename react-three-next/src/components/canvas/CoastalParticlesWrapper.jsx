@@ -10,24 +10,10 @@ const videoSources = [
   '/videos/converted/coastal1.6_converted.mp4',
   '/videos/converted/coastal1.7_converted.mp4',
   '/videos/converted/coastal1.8_converted.mp4',
-  '/videos/converted/coastal1.9_converted.mp4',
-  '/videos/converted/coastal1.10_converted.mp4',
-  '/videos/converted/coastal1.11_converted.mp4',
-  '/videos/converted/coastal1.12_converted.mp4',
-  '/videos/converted/coastal1.13_converted.mp4',
-  '/videos/converted/coastal1.14_converted.mp4',
-  '/videos/converted/coastal1.15_converted.mp4',
-  '/videos/converted/coastal1.16_converted.mp4',
-  '/videos/converted/coastal1.17_converted.mp4',
-  '/videos/converted/coastal1.18_converted.mp4',
-  '/videos/converted/coastal1.19_converted.mp4',
-  '/videos/converted/coastal1.20_converted.mp4',
-  '/videos/converted/coastal1.21_converted.mp4',
-  '/videos/converted/coastal1.22_converted.mp4',
-  '/videos/converted/coastal1.23_converted.mp4',
+  '/videos/converted/coastal2.0_converted.mp4',
 ]
 
-const MAX_VISIBLE = 8
+const MAX_VISIBLE = 9
 
 export default function CoastalParticlesWrapper() {
   const particleConfigs = useMemo(() => {

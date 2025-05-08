@@ -2,19 +2,7 @@
 
 # Array of your video files
 videos=(
-  "coastal1.1.mp4"
-  "coastal1.2.mp4"
-  "coastal1.3.mp4"
-  "coastal1.4.mp4"
-  "coastal1.5.mp4"
-  "coastal1.6.mp4"
-  "coastal1.7.mp4"
-  "coastal1.8.mp4"
-  "coastal1.9.mp4"
   "coastal2.0.mp4"
-  "coastal2.1.mp4"
-  "coastal2.2.mp4"
-  "coastal2.3.mp4"
 )
 
 # Create output directory if it doesn't exist

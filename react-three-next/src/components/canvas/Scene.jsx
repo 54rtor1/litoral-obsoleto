@@ -18,8 +18,6 @@ export default function Scene({ scrollY, useImageBackground = false, ...props })
           const imagePaths = [
             '/background1.png',
             '/background2.png',
-            '/background3.png',
-            '/background4.png'
           ]
 
           const chosenImage = imagePaths[Math.floor(Math.random() * imagePaths.length)]
