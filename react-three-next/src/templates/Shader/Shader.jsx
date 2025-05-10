@@ -65,26 +65,46 @@ const CoastalShaderMaterial = shaderMaterial(
 
     vec4 texColor = texture2D(videoTexture, vUv);
 
-    float satFactor = 1.4 - 0.4 * uVariant;
-    float contrast = 1.3 - 0.2 * mod(uVariant, 2.0);
-    float brightness = 1.2 - 0.3 * sin(uVariant * 1.57);
+    // Keep contrast the same across all scenarios
+    float contrast = 1.6;
 
-    vec3 enhancedColor = enhanceColor(texColor.rgb, satFactor, contrast, brightness);
+    // Scenario 1: Optimistic (more saturated, warmer, purplish tones)
+    float satOptimistic = 2.2 - 0.2 * uVariant; // Higher saturation, more purplish
+    float brightnessOptimistic = 1.2 + 0.5 * sin(uVariant * 1.57); // More brightness
 
+    // Scenario 2: Pessimistic (less saturated, cooler, purplish tones)
+    float satPessimistic = 1.5 + 0.2 * uVariant; // Slightly less saturated, cooler tones
+    float brightnessPessimistic = 1.0 + 0.1 * sin(uVariant * 1.57); // Slightly less bright
+
+    // Scenario 3: Default (slightly more faded, purplish, less saturated)
+    float satDefault = 1.2 - 0.4 * uVariant; // Decreased saturation for more faded look
+    float brightnessDefault = 1.05 + 0.05 * sin(uVariant * 1.57); // Slightly faded brightness
+
+    // Color enhancement based on scenarios
+    vec3 enhancedColor;
+    if (uVariant < 1.0) {
+      enhancedColor = enhanceColor(texColor.rgb, satOptimistic, contrast, brightnessOptimistic); // Optimistic
+    } else if (uVariant < 2.0) {
+      enhancedColor = enhanceColor(texColor.rgb, satPessimistic, contrast, brightnessPessimistic); // Pessimistic
+    } else {
+      enhancedColor = enhanceColor(texColor.rgb, satDefault, contrast, brightnessDefault); // Default
+    }
+
+    // Purple-leaning color tints
     vec3 scenarioTints[3];
-    scenarioTints[0] = vec3(0.2, 0.4, 0.8); // cooler blue
-    scenarioTints[1] = vec3(0.4, 0.6, 0.7); // muted grayish teal
-    scenarioTints[2] = vec3(0.3, 0.3, 0.5); // purplish desaturation
+    scenarioTints[0] = vec3(0.6, 0.8, 1.0); // Optimistic: purplish tones
+    scenarioTints[1] = vec3(0.6, 0.7, 1.0); // Pessimistic: cooler purplish tones
+    scenarioTints[2] = vec3(0.7, 0.5, 0.9); // Default: purplish but more faded
 
-    int variantIndex = int(mod(uVariant, 3.0));
-    vec3 tint = scenarioTints[variantIndex];
+    // Applying the tint based on the scenario
+    vec3 tint = scenarioTints[int(mod(uVariant, 3.0))];
 
-    // More sea level = more tint (cooler)
     enhancedColor = mix(enhancedColor, tint, 0.3 + 0.5 * uSeaLevel);
 
+    // Additional gradient effect
     float distanceFromCenter = length(vPosition.xy);
     float colorMixStrength = smoothstep(0.0, 1.0, distanceFromCenter * 0.1);
-    vec3 gradientColor = mix(vec3(0.2, 0.6, 0.9), vec3(0.5, 0.5, 0.7), colorMixStrength); // more muted range
+    vec3 gradientColor = mix(vec3(0.2, 0.6, 0.9), vec3(0.5, 0.5, 0.7), colorMixStrength);
 
     enhancedColor = mix(enhancedColor, gradientColor, colorMixStrength * 0.4);
 
